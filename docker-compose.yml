@@ -1,0 +1,15 @@
+version: '3.1'
+services:
+  typeorm:
+    image: mysql:5.7
+    volumes: 
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: franco19
+      MYSQL_DATABASE: typeorm
+      MYSQL_USER: fran
+      MYSQL_PASSWORD: franco19
+    ports:
+      - 3312:3306
+
