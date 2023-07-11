@@ -19,6 +19,7 @@ export class PurchaseRouter extends BaseRouter<
         this.controller.getStadistics(req, res)
       )
       .get("/purchase/:id", (req, res) => this.controller.get(req, res))
+      .get("/purchase/customer/:id", (req, res) => this.controller.getByCustomer(req, res))
       .post(
         "/purchase",
         (req, res, next) => [this.middleware.validatePurchase(req, res, next)],

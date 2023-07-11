@@ -45,6 +45,17 @@ export class PurchaseController {
       this.responseHttp.error(res, error, error);
     }
   }
+  async getByCustomer(req: Request, res: Response) {
+    try {
+      const id = Number(req.params.id);
+      const purchase = await this.purchaseService.findPurchaseByCustomerId(id);
+      if (!purchase || purchase.length < 1)
+        return this.responseHttp.notFound(res, "Not Found", id + " Not Found");
+      this.responseHttp.oK(res, purchase);
+    } catch (error) {
+      this.responseHttp.error(res, error, error);
+    }
+  }
   async getStadistics(req: Request, res: Response) {
     try {
       const stadisticsProducts = await this.purchaseService.getProductsMostSales();

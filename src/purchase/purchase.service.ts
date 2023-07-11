@@ -61,6 +61,35 @@ export class PurchaseService extends BaseService<Purchase> {
     });
   }
 
+  public async findPurchaseByCustomerId(id: number): Promise<Purchase[] | null> {
+    return (await this.repository).find({
+      where: { customer:{
+        id
+      } },
+      relations: {
+        customer: true,
+        purchasesProducts: {
+          product:true,
+        },
+      },
+      select: {
+        customer: {
+          id: true,
+          dni: true,
+          addres: true,
+        },
+        purchasesProducts: {
+          id: true,
+          product: {
+            name: true,
+          },
+          quantity: true,
+          totalPrice: true,
+        },
+      },
+    });
+  }
+
   public async getProductsMostSales(): Promise<any[]> {
     return (await this.repository)
       .createQueryBuilder("purchase")
