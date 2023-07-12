@@ -10,9 +10,9 @@ export class PurchaseDto extends BaseDto {
 
   @IsNotEmpty()
   @Length(1, 50)
-  payment!:string
+  payment?:string
 
   @IsNotEmpty()
-  customer!:Customer
+  customer?:Customer
 
 }

@@ -28,6 +28,9 @@ export class PurchaseRouter extends BaseRouter<
       .post("/create-order-mp", (req, res) =>
         this.mercadoPagoController.createOrder(req, res)
       )
+      .post("/webhook", (req, res) =>
+        this.mercadoPagoController.recibeWebhook(req, res)
+      )
       .put("/purchase/:id", (req, res) => this.controller.update(req, res))
       .delete("/purchase/:id", (req, res) => this.controller.delete(req, res));
   }

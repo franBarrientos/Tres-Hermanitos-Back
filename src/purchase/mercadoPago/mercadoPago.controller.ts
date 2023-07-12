@@ -1,11 +1,13 @@
 import { ResponseHttp } from "../../config/responses.http";
 import { Request, Response } from "express";
-import mercadopago from "mercadopago";
+import mercadopago, { payment } from "mercadopago";
 import { ServerConfig } from "../../config/config";
+import { PurchaseService } from "../purchase.service";
 
 export class MercadoPagoController extends ServerConfig {
   constructor(
-    private readonly responseHttp: ResponseHttp = new ResponseHttp()
+    private readonly responseHttp: ResponseHttp = new ResponseHttp(),
+    private readonly purchaseServide: PurchaseService = new PurchaseService()
   ) {
     super();
   }
@@ -15,7 +17,9 @@ export class MercadoPagoController extends ServerConfig {
       mercadopago.configure({
         access_token: this.getEnvironmet("MERCADO_PAGO_TOKEN")!,
       });
-      const { carrito } = req.body;
+      const { carrito, idPurchase } = req.body;
+      console.log(idPurchase)
+      console.log(carrito)
       const carritoMp = carrito.map((item: any) => {
         return {
           title: item.name,
@@ -26,14 +30,38 @@ export class MercadoPagoController extends ServerConfig {
       });
       const response = await mercadopago.preferences.create({
         items: carritoMp,
-        back_urls:{
-            failure:"http://localhost:5173",
-            success:"http://localhost:5173",
-            pending:"http://localhost:5173",
-        }
+        external_reference: `${idPurchase}`,
+        back_urls: {
+          failure: "https://ecommerce-fran-company.netlify.app/",
+          success: "https://ecommerce-fran-company.netlify.app/",
+          pending: "https://ecommerce-fran-company.netlify.app/",
+        },
+        notification_url:
+          "https://ecommerce-fran-company.netlify.app/api/webhook",
       });
 
       this.responseHttp.oK(res, { urlMercadoPago: response.body.init_point });
+    } catch (error) {
+      this.responseHttp.error(res, error);
+    }
+  }
+
+  public async recibeWebhook(req: Request, res: Response) {
+    try {
+      const query = req.query;
+      if (query.type == "payment") {
+        const data = await mercadopago.payment.findById(
+          query["data.id"] as unknown as number
+        );
+
+        if (data.body.status == "approved") {
+          const idPurchase = data.body.external_reference;
+          await this.purchaseServide.updatePurchase(Number(idPurchase), {
+            state: "paid",
+          });
+        }
+      }
+      this.responseHttp.oK(res, "Ok");
     } catch (error) {
       this.responseHttp.error(res, error);
     }
