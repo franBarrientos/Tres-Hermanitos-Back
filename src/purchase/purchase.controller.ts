@@ -48,10 +48,20 @@ export class PurchaseController {
   async getByCustomer(req: Request, res: Response) {
     try {
       const id = Number(req.params.id);
-      const purchase = await this.purchaseService.findPurchaseByCustomerId(id);
-      if (!purchase || purchase.length < 1)
+      const purchases = await this.purchaseService.findPurchaseByCustomerId(id);
+      if (!purchases || purchases.length < 1){
         return this.responseHttp.notFound(res, "Not Found", id + " Not Found");
-      this.responseHttp.oK(res, purchase);
+      }
+      
+        const responseWithTotal = purchases.map((purchas) => {
+          return {
+            ...purchas,
+            totalPurchase: purchas.purchasesProducts.reduce((acc, product) => {
+              return product.totalPrice + acc;
+            }, 0),
+          };
+        });
+      this.responseHttp.oK(res, responseWithTotal);
     } catch (error) {
       this.responseHttp.error(res, error, error);
     }

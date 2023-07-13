@@ -66,12 +66,7 @@ export class PurchaseService extends BaseService<Purchase> {
       where: { customer:{
         id
       } },
-      relations: {
-        customer: true,
-        purchasesProducts: {
-          product:true,
-        },
-      },
+      relations: ["customer", "purchasesProducts", "purchasesProducts.product"],
       select: {
         customer: {
           id: true,
