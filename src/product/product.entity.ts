@@ -17,6 +17,9 @@ export class Product extends BaseEntity{
     
     @Column()
     price!:number
+
+    @Column({default:true})
+    stock?:boolean
     
     @ManyToOne(()=>Category,
     (category=>category.products))

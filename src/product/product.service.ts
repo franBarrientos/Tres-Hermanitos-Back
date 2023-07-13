@@ -13,6 +13,9 @@ export class ProductService extends BaseService<Product> {
     limit: number
   ): Promise<Product[]> {
     return (await this.repository).find({
+      where:{
+        stock:true
+      },
       relations: {
         category: true,
       },

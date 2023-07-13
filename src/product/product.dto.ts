@@ -12,8 +12,11 @@ export class ProductDto extends BaseDto {
   description!: string;
 
   @IsNotEmpty()
-  @Length(1, 125)
+  @Length(1, 900)
   img!: string;
+
+  @IsOptional()
+  stock?: boolean;
 
   @IsNotEmpty()
   price!: number;

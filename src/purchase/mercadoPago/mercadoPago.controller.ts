@@ -32,9 +32,9 @@ export class MercadoPagoController extends ServerConfig {
         items: carritoMp,
         external_reference: `${idPurchase}`,
         back_urls: {
-          failure: "https://ecommerce-fran-company.netlify.app/",
-          success: "https://ecommerce-fran-company.netlify.app/",
-          pending: "https://ecommerce-fran-company.netlify.app/",
+          failure: "https://lyjjoyas.netlify.app/",
+          success: "https://lyjjoyas.netlify.app/",
+          pending: "https://lyjjoyas.netlify.app/",
         },
         notification_url:
           "https://ecommerce-back-production-8ee6.up.railway.app/api/webhook",
