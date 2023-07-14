@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/express-fileupload": "^1.4.1",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/mercadopago": "^1.5.8",
     "bcrypt": "^5.1.0",
@@ -27,6 +28,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
     "google-auth-library": "^8.9.0",
     "jsonwebtoken": "^9.0.0",
     "mercadopago": "^1.5.16",

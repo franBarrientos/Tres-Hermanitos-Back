@@ -10,15 +10,21 @@ import { CategoryRouter } from "./category/category.roter";
 import { PurchaseRouter } from "./purchase/purchase.router";
 import { PurchasesProductRouter } from "./purchase/purchases-products.router";
 import { AuthRouter } from "./auth/auth.router";
-
+import fileUpload from "express-fileupload";
 class ServerBoostrap extends ServerConfig {
   public app: express.Application = express();
   private port: number = this.getPort;
 
   constructor() {
     super();
-    this.app.use(cors({origin:"*"}));
+    this.app.use(cors({ origin: "*" }));
     this.app.use(express.json());
+    this.app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: "/tmp/",
+      })
+    );
     this.app.use("/api", this.routes());
     this.connectDB();
     this.listen();

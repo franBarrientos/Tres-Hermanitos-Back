@@ -2,10 +2,23 @@ import { DeleteResult, UpdateResult } from "typeorm";
 import { BaseService } from "../config/base.service";
 import { Product } from "./product.entity";
 import { ProductDto } from "./product.dto";
+import cloudinary from "cloudinary";
 
 export class ProductService extends BaseService<Product> {
+  public cloudinary = cloudinary.v2.config({
+    cloud_name: this.getEnvironmet("cloud_name"),
+    api_key: this.getEnvironmet("api_key"),
+    api_secret: this.getEnvironmet("api_secret"),
+  });
+
   constructor() {
     super(Product);
+  }
+
+  public async saveImgCloudinary(file: any) {
+    const pathFile = file.archivo.tempFilePath;
+    const response = await cloudinary.v2.uploader.upload(pathFile);
+    return response.secure_url;
   }
 
   public async findAllProducts(
@@ -13,8 +26,8 @@ export class ProductService extends BaseService<Product> {
     limit: number
   ): Promise<Product[]> {
     return (await this.repository).find({
-      where:{
-        stock:true
+      where: {
+        stock: true,
       },
       relations: {
         category: true,
