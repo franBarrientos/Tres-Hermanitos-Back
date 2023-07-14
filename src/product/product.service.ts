@@ -16,7 +16,7 @@ export class ProductService extends BaseService<Product> {
   }
 
   public async saveImgCloudinary(file: any) {
-    const pathFile = file.archivo.tempFilePath;
+    const pathFile = file.tempFilePath;
     const response = await cloudinary.v2.uploader.upload(pathFile);
     return response.secure_url;
   }

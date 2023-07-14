@@ -36,12 +36,9 @@ export class ProductController {
   async create(req: Request, res: Response) {
     try {
       let product = req.body as ProductDto;
-      if (product.img) {
-        const urlImg = await this.productService.saveImgCloudinary(req.files);
-        product.img = urlImg;
-        console.log(urlImg)
-        return
-      }
+      if (!req.files?.img) throw new Error("no img");
+      const urlImg = await this.productService.saveImgCloudinary(req.files.img);
+      product.img = urlImg;
       const newProduct = await this.productService.createProduct(req.body);
       this.responseHttp.created(res, newProduct);
     } catch (error) {

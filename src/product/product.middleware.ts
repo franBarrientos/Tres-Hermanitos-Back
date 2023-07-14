@@ -9,13 +9,13 @@ export class ProductMiddlware extends AuthMiddleware{
     private readonly responseHttp: ResponseHttp = new ResponseHttp()
   ) {super()}
   validateProduct(req: Request, res: Response, next: NextFunction) {
-    const { name, description, price, category, img } = req.body;
+    const { name, description, price, category } = req.body;
     const productValidated = new ProductDto();
     productValidated.name = name;
     productValidated.description = description;
     productValidated.price = price;
     productValidated.category = category;
-    productValidated.img = img;
+    productValidated.img = "img";
 
     validate(productValidated).then((err) => {
       if (err.length > 0) {
