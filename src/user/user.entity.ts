@@ -23,7 +23,7 @@ class User extends BaseEntity {
   @Column({nullable:true})
   age?: number;
 
-  @Column({type:"enum", enum:RoleType, nullable:false})
+  @Column({type:"enum", enum:RoleType, nullable:false, default:RoleType.USER})
   role!: RoleType;
 
   @Column({nullable:true})

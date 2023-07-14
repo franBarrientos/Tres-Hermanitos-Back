@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { ResponseHttp } from "../config/responses.http";
 import { validate } from "class-validator";
 import { CategoryDto } from "./category.dto";
+import { AuthMiddleware } from "../auth/auth.middleware";
 
-export class CategoryMiddlware {
+export class CategoryMiddlware extends AuthMiddleware{
   constructor(
     private readonly responseHttp: ResponseHttp = new ResponseHttp()
-  ) {}
+  ) {super()}
   validatecategory(req: Request, res: Response, next: NextFunction) {
     const { name, img} = req.body;
     const categoryValidated = new CategoryDto();

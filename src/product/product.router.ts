@@ -20,7 +20,13 @@ export class ProductRouter extends BaseRouter<
         (req, res, next) => this.middleware.validateProduct(req, res, next),
         (req, res) => this.controller.create(req, res)
       )
-      .put("/product/:id", (req, res) => this.controller.update(req, res))
-      .delete("/product/:id", (req, res) => this.controller.delete(req, res));
+      .put(
+        "/product/:id",
+        (req, res, next) => this.middleware.checkAdminRole(req, res, next),
+        (req, res) => this.controller.update(req, res)
+      )
+      .delete("/product/:id",
+      (req, res, next) => this.middleware.checkAdminRole(req, res, next),
+      (req, res) => this.controller.delete(req, res));
   }
 }

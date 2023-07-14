@@ -37,13 +37,6 @@ export class ProductController {
       }
       async create(req: Request, res: Response) {
         try {
-          console.log("object");
-          console.log("object");
-          console.log("object");
-          console.log("object");
-          console.log("object");
-          console.log("object");
-          console.log("object");
           const newProduct = await this.productService.createProduct(req.body);
           this.responseHttp.created(res, newProduct);
         } catch (error) {

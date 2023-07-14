@@ -21,7 +21,6 @@ export class UserMiddlware extends AuthMiddleware {
     userValidated.lastName = lastName || null;
     userValidated.password = password;
     userValidated.province = province || null;
-    userValidated.role = role;
 
     validate(userValidated).then((err) => {
       if (err.length > 0) {

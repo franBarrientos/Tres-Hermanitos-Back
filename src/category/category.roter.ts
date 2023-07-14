@@ -15,10 +15,15 @@ export class CategoryRouter extends BaseRouter<
       .get("/category/:id", (req, res) => this.controller.get(req, res))
       .post(
         "/category",
-        (req, res, next) => [this.middleware.validatecategory(req, res, next)],
+        (req, res, next) => this.middleware.checkAdminRole(req, res, next),
+        (req, res, next) => this.middleware.validatecategory(req, res, next),
         (req, res) => this.controller.create(req, res)
       )
-      .put("/category/:id", (req, res) => this.controller.update(req, res))
-      .delete("/category/:id", (req, res) => this.controller.delete(req, res));
+      .put("/category/:id",
+      (req, res, next) => this.middleware.checkAdminRole(req, res, next),
+      (req, res) => this.controller.update(req, res))
+      .delete("/category/:id",
+      (req, res, next) => this.middleware.checkAdminRole(req, res, next),
+      (req, res) => this.controller.delete(req, res));
   }
 }
