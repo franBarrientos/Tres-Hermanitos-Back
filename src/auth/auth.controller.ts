@@ -41,6 +41,17 @@ export class AuthController extends AuthService {
       this.httpResponses.error(res, error);
     }
   }
+
+  async refreshToken(req: Request, res: Response) {
+    const isTokenExpired = this.checkTokenExpiration(req.body.token);
+    if (!isTokenExpired) {
+      this.httpResponses.unauthorized(res, "tokenExp", "token expired");
+    } else {
+      this.httpResponses.oK(res, isTokenExpired);
+    }
+  }
+
+  
   async google(req: Request, res: Response) {
     try {
       const { credential } = req.body;

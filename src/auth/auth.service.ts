@@ -9,6 +9,7 @@ export interface PayloadInterface {
   id: number;
   email: string;
   role: RoleType;
+  exp?: any;
 }
 
 export class AuthService extends ServerConfig {
@@ -37,22 +38,44 @@ export class AuthService extends ServerConfig {
     return null;
   }
 
-  public generateToken(user: User): { token: string; user: User } {
+  public generateToken(
+    user: User,
+    refresh: boolean = false
+  ): { token: string; user?: User } {
     const payload: PayloadInterface = {
       email: user.email,
       id: user.id,
       role: user.role,
     };
+    if (refresh) {
+      return {
+        token: this.jwtInstance.sign(payload, this.JWTSecret, {
+          expiresIn: 86400,
+        }),
+      };
+    }
     user.password = "NOT PERMISISON";
     return {
       token: this.jwtInstance.sign(payload, this.JWTSecret, {
-        expiresIn: "2hr",
+        expiresIn: 86400,
       }),
       user,
     };
   }
 
-  public verifyToken(token: string):PayloadInterface | null {
+  public checkTokenExpiration(token: string): boolean | { token: string } {
+    try {
+      const decoded = this.verifyToken(token);
+      if (!decoded) throw new Error("Expired or not exist"); // El token aún es válido
+      return this.generateToken(decoded as User, true);
+    } catch (error) {
+      console.log("NO es Valido ");
+      // Error al verificar el token (por ejemplo, firma inválida o token malformado)
+      return false;
+    }
+  }
+
+  public verifyToken(token: string): PayloadInterface | null {
     try {
       return jwt.verify(token, this.JWTSecret) as PayloadInterface;
     } catch (error) {

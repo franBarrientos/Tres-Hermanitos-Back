@@ -9,6 +9,7 @@ export class AuthRouter extends BaseRouter<AuthController, AuthMiddleware> {
 
   routes(): void {
     this.router.post("/login", (req, res) => this.controller.login(req, res));
+    this.router.post("/refreshToken", (req, res) => this.controller.refreshToken(req, res));
     this.router.post("/google", (req, res) => this.controller.google(req, res));
   }
 }
