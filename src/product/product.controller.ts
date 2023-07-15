@@ -39,7 +39,7 @@ export class ProductController {
       if (!req.files?.img) throw new Error("no img");
       const urlImg = await this.productService.saveImgCloudinary(req.files.img);
       product.img = urlImg;
-      const newProduct = await this.productService.createProduct(req.body);
+      const newProduct = await this.productService.createProduct(product);
       this.responseHttp.created(res, newProduct);
     } catch (error) {
       this.responseHttp.error(res, error, error);
@@ -48,9 +48,25 @@ export class ProductController {
   async update(req: Request, res: Response) {
     try {
       const id = Number(req.params.id);
+      const product = req.body as ProductDto;
+      if (req.files?.img) {
+        product.img = "...";
+        const thereImg = (await this.productService.findProductById(id))?.img;
+        if (thereImg) {
+          const urlSplited = thereImg.split("/");
+          const name = urlSplited.pop();
+          const cloudinaryId = name?.split(".").shift();
+          await this.productService.deleteImgCloudinary(cloudinaryId);
+        }
+        const urlImg = await this.productService.saveImgCloudinary(
+          req.files.img
+        );
+        product.img = urlImg;
+      }
+
       const responseUpdate = await this.productService.updateProduct(
         id,
-        req.body
+        product
       );
       if (responseUpdate.affected == 0)
         return this.responseHttp.notFound(res, "Not Found", id + " Not Found");

@@ -9,10 +9,10 @@ export class CategoryMiddlware extends AuthMiddleware{
     private readonly responseHttp: ResponseHttp = new ResponseHttp()
   ) {super()}
   validatecategory(req: Request, res: Response, next: NextFunction) {
-    const { name, img} = req.body;
+    const { name} = req.body;
     const categoryValidated = new CategoryDto();
     categoryValidated.name = name;
-    categoryValidated.img = img;
+    categoryValidated.img = "img";
 
     validate(categoryValidated).then((err) => {
       if (err.length > 0) {

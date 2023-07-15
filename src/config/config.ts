@@ -3,14 +3,22 @@ import { DataSource } from "typeorm";
 import fs from "fs";
 import { join } from "path";
 import { AppDataSource } from "./data.source";
+import cloudinary from "cloudinary";
 
 
 export abstract class ServerConfig {
+  
   constructor() {
     const pathEnvironmetVariables = this.createPath(this.getNodeEnv);
     dotenv.config({
       path: pathEnvironmetVariables,
-    });   
+    });
+    cloudinary.v2.config({
+      cloud_name: this.getEnvironmet("cloud_name"),
+      api_key: this.getEnvironmet("api_key"),
+      api_secret: this.getEnvironmet("api_secret"),
+    });
+     
   }
 
   public createPath(customEnv: string): string {
