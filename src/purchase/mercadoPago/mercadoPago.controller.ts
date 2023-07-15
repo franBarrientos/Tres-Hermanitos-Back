@@ -32,9 +32,9 @@ export class MercadoPagoController extends ServerConfig {
         items: carritoMp,
         external_reference: `${idPurchase}`,
         back_urls: {
-          failure: "https://lyjjoyas.netlify.app/",
-          success: "https://lyjjoyas.netlify.app/",
-          pending: "https://lyjjoyas.netlify.app/",
+          failure: "https://lyjjoyas.vercel.app/",
+          success: "https://lyjjoyas.vercel.app/",
+          pending: "https://lyjjoyas.vercel.app/",
         },
         notification_url:
           "https://ecommerce-backv3-production.up.railway.app/api/webhook",
