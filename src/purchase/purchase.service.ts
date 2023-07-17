@@ -11,8 +11,8 @@ export class PurchaseService extends BaseService<Purchase> {
   public async findAllPurchases(
     skip: number,
     limit: number
-  ): Promise<Purchase[]> {
-    return (await this.repository).find({
+  ): Promise<[Purchase[], number]> {
+    return (await this.repository).findAndCount({
       relations: ["customer", "customer.user", "purchasesProducts", "purchasesProducts.product"],
       select: {
         customer: {

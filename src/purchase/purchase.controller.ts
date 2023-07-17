@@ -3,6 +3,8 @@ import { ResponseHttp } from "../config/responses.http";
 import { PurchaseService } from "./purchase.service";
 import { PurchasesProductsService } from "./purchases-products.service";
 
+/* const ITEMS_PER_PAGE = 10;
+ */
 export class PurchaseController {
   constructor(
     private readonly purchaseService: PurchaseService = new PurchaseService(),
@@ -13,9 +15,10 @@ export class PurchaseController {
   async getAll(req: Request, res: Response) {
     try {
       const skip = req.query.skip ? Number(req.query.skip) : 0;
-      const limit = req.query.limit ? Number(req.query.limit) : 30;
-      const purchases = await this.purchaseService.findAllPurchases(
-        skip,
+      const limit = req.query.limit ? Number(req.query.limit) : 10;
+      const ITEMS_PER_PAGE = (skip - 1) * 10;
+      const [purchases, total] = await this.purchaseService.findAllPurchases(
+        ITEMS_PER_PAGE,
         limit
       );
       if (purchases.length < 1)
@@ -28,7 +31,11 @@ export class PurchaseController {
           }, 0),
         };
       });
-      this.responseHttp.oK(res, responseWithTotal);
+      this.responseHttp.oK(res, {
+        purchases: responseWithTotal,
+        total,
+        totalPages: Math.ceil(total / limit),
+      });
     } catch (error) {
       this.responseHttp.error(res, error, error);
     }
@@ -49,18 +56,18 @@ export class PurchaseController {
     try {
       const id = Number(req.params.id);
       const purchases = await this.purchaseService.findPurchaseByCustomerId(id);
-      if (!purchases || purchases.length < 1){
+      if (!purchases || purchases.length < 1) {
         return this.responseHttp.notFound(res, "Not Found", id + " Not Found");
       }
-      
-        const responseWithTotal = purchases.map((purchas) => {
-          return {
-            ...purchas,
-            totalPurchase: purchas.purchasesProducts.reduce((acc, product) => {
-              return product.totalPrice + acc;
-            }, 0),
-          };
-        });
+
+      const responseWithTotal = purchases.map((purchas) => {
+        return {
+          ...purchas,
+          totalPurchase: purchas.purchasesProducts.reduce((acc, product) => {
+            return product.totalPrice + acc;
+          }, 0),
+        };
+      });
       this.responseHttp.oK(res, responseWithTotal);
     } catch (error) {
       this.responseHttp.error(res, error, error);
@@ -68,18 +75,20 @@ export class PurchaseController {
   }
   async getStadistics(req: Request, res: Response) {
     try {
-      const stadisticsProducts = await this.purchaseService.getProductsMostSales();
-      const stadisticsCategory = await this.purchaseProductsService.getCategorysMostSales();
+      const stadisticsProducts =
+        await this.purchaseService.getProductsMostSales();
+      const stadisticsCategory =
+        await this.purchaseProductsService.getCategorysMostSales();
 
-      if (!stadisticsProducts){
+      if (!stadisticsProducts) {
         return this.responseHttp.notFound(res, "Not Found", " Not Found");
         console.log(stadisticsProducts);
       }
-      if(!stadisticsCategory){
+      if (!stadisticsCategory) {
         return this.responseHttp.notFound(res, "Not Found", " Not Found");
         console.log(stadisticsProducts);
       }
-    this.responseHttp.oK(res, {stadisticsProducts, stadisticsCategory});
+      this.responseHttp.oK(res, { stadisticsProducts, stadisticsCategory });
     } catch (error) {
       this.responseHttp.error(res, error, error);
     }
