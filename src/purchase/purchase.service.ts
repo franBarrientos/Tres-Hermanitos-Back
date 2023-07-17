@@ -13,13 +13,16 @@ export class PurchaseService extends BaseService<Purchase> {
     limit: number
   ): Promise<Purchase[]> {
     return (await this.repository).find({
-      relations: ["customer", "purchasesProducts", "purchasesProducts.product"],
-
+      relations: ["customer", "customer.user", "purchasesProducts", "purchasesProducts.product"],
       select: {
         customer: {
           id: true,
           dni: true,
           addres: true,
+          user:{
+            firstName:true,
+            email:true
+          }
         },
         purchasesProducts: {
           id: true,
@@ -32,6 +35,9 @@ export class PurchaseService extends BaseService<Purchase> {
       },
       skip,
       take: limit,
+      order:{
+        id:"DESC"
+      }
     });
   }
 

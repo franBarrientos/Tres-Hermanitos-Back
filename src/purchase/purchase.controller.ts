@@ -13,7 +13,7 @@ export class PurchaseController {
   async getAll(req: Request, res: Response) {
     try {
       const skip = req.query.skip ? Number(req.query.skip) : 0;
-      const limit = req.query.limit ? Number(req.query.limit) : 15;
+      const limit = req.query.limit ? Number(req.query.limit) : 30;
       const purchases = await this.purchaseService.findAllPurchases(
         skip,
         limit
