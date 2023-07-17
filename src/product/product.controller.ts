@@ -12,11 +12,21 @@ export class ProductController {
   async getAll(req: Request, res: Response) {
     try {
       const skip = req.query.skip ? Number(req.query.skip) : 0;
-      const limit = req.query.limit ? Number(req.query.limit) : 20;
-      const products = await this.productService.findAllProducts(skip, limit);
+      const limit = req.query.limit ? Number(req.query.limit) : 10;
+      const category = req.query.category ? Number(req.query.category) : 1;
+      const ITEMS_PER_PAGE = (skip - 1) * 10;
+      const [products, total] = await this.productService.findAllProducts(
+        ITEMS_PER_PAGE,
+        limit,
+        category
+      );
       if (products.length < 1)
         return this.responseHttp.notFound(res, "Not Found", " Not Found");
-      this.responseHttp.oK(res, products);
+      this.responseHttp.oK(res, {
+        products,
+        total,
+        totalPages: Math.ceil(total / limit),
+      });
     } catch (error) {
       this.responseHttp.error(res, error, error);
     }

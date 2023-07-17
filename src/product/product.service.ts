@@ -10,11 +10,15 @@ export class ProductService extends BaseService<Product> {
   }
   public async findAllProducts(
     skip: number,
-    limit: number
-  ): Promise<Product[]> {
-    return (await this.repository).find({
+    limit: number,
+    category: number
+  ): Promise<[Product[], number]> {
+    return (await this.repository).findAndCount({
       where: {
         stock: true,
+        category:{
+          id:category
+        }
       },
       relations: {
         category: true,

@@ -18,5 +18,5 @@ export const AppDataSource: DataSource = new DataSource({
   migrations: [__dirname + "/../migrations/*{.ts,.js}"],
   // "make migration" : "npm run typeorm migration:generate",
   //  "run migration" : "npm run typeorm migration:run"
-  synchronize: true,
+  synchronize: false,
 });
