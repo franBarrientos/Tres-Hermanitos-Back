@@ -1,4 +1,4 @@
-import { DeleteResult, SelectQueryBuilder, UpdateResult } from "typeorm";
+import { DeleteResult, Like, SelectQueryBuilder, UpdateResult } from "typeorm";
 import { BaseService } from "../config/base.service";
 import { PurchaseDto } from "./purchase.dto";
 import { Purchase } from "./purchase.entity";
@@ -13,16 +13,21 @@ export class PurchaseService extends BaseService<Purchase> {
     limit: number
   ): Promise<[Purchase[], number]> {
     return (await this.repository).findAndCount({
-      relations: ["customer", "customer.user", "purchasesProducts", "purchasesProducts.product"],
+      relations: [
+        "customer",
+        "customer.user",
+        "purchasesProducts",
+        "purchasesProducts.product",
+      ],
       select: {
         customer: {
           id: true,
           dni: true,
           addres: true,
-          user:{
-            firstName:true,
-            email:true
-          }
+          user: {
+            firstName: true,
+            email: true,
+          },
         },
         purchasesProducts: {
           id: true,
@@ -35,9 +40,9 @@ export class PurchaseService extends BaseService<Purchase> {
       },
       skip,
       take: limit,
-      order:{
-        id:"DESC"
-      }
+      order: {
+        id: "DESC",
+      },
     });
   }
 
@@ -67,11 +72,15 @@ export class PurchaseService extends BaseService<Purchase> {
     });
   }
 
-  public async findPurchaseByCustomerId(id: number): Promise<Purchase[] | null> {
+  public async findPurchaseByCustomerId(
+    id: number
+  ): Promise<Purchase[] | null> {
     return (await this.repository).find({
-      where: { customer:{
-        id
-      } },
+      where: {
+        customer: {
+          id,
+        },
+      },
       relations: ["customer", "purchasesProducts", "purchasesProducts.product"],
       select: {
         customer: {
@@ -89,6 +98,24 @@ export class PurchaseService extends BaseService<Purchase> {
         },
       },
     });
+  }
+  public async findByName(
+    skip: number,
+    limit: number,
+    name: string
+  ): Promise<[Purchase[], number]> {
+    return (await this.repository)
+      .createQueryBuilder("purchase")
+      .leftJoinAndSelect("purchase.customer", "customer")
+      .leftJoinAndSelect("customer.user", "user")
+      .leftJoinAndSelect("purchase.purchasesProducts", "purchasesProducts")
+      .leftJoinAndSelect("purchasesProducts.product", "product")
+      .where("user.firstName LIKE :name", { name: `%${name}%` })
+      .orWhere("user.email LIKE :email", { email: `%${name}%` })
+      .orWhere("customer.dni = :dni", { dni: Number(name) })
+      .take(limit)
+      .skip(skip)
+      .getManyAndCount();
   }
 
   public async getProductsMostSales(): Promise<any[]> {

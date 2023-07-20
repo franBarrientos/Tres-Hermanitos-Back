@@ -1,10 +1,9 @@
-import { DeleteResult, UpdateResult } from "typeorm";
+import { DeleteResult, Like, UpdateResult } from "typeorm";
 import { BaseService } from "../config/base.service";
 import { Product } from "./product.entity";
 import { ProductDto } from "./product.dto";
 
 export class ProductService extends BaseService<Product> {
-
   constructor() {
     super(Product);
   }
@@ -16,9 +15,32 @@ export class ProductService extends BaseService<Product> {
     return (await this.repository).findAndCount({
       where: {
         stock: true,
-        category:{
-          id:category
-        }
+        category: {
+          id: category,
+        },
+      },
+      relations: {
+        category: true,
+      },
+      select: {
+        category: {
+          id: true,
+          name: true,
+        },
+      },
+      skip,
+      take: limit,
+    });
+  }
+  public async findByName(
+    skip: number,
+    limit: number,
+    name: string 
+  ): Promise<[Product[], number]> {
+    return (await this.repository).findAndCount({
+      where: {
+        stock: true,
+        name:Like(`%${name}%`)
       },
       relations: {
         category: true,

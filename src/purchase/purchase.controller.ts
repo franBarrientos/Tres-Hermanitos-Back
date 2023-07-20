@@ -14,7 +14,7 @@ export class PurchaseController {
 
   async getAll(req: Request, res: Response) {
     try {
-      const skip = req.query.skip ? Number(req.query.skip) : 0;
+      const skip = req.query.skip ? Number(req.query.skip) : 1;
       const limit = req.query.limit ? Number(req.query.limit) : 10;
       const ITEMS_PER_PAGE = (skip - 1) * 10;
       const [purchases, total] = await this.purchaseService.findAllPurchases(
@@ -48,6 +48,31 @@ export class PurchaseController {
       if (!purchase)
         return this.responseHttp.notFound(res, "Not Found", id + " Not Found");
       this.responseHttp.oK(res, purchase);
+    } catch (error) {
+      this.responseHttp.error(res, error, error);
+    }
+  }
+
+  async getByName(req: Request, res: Response) {
+    try {
+      const skip = req.query.skip ? Number(req.query.skip) : 1;
+      const limit = req.query.limit ? Number(req.query.limit) : 9;
+      const name = req.query.name ? (req.query.name as string) : "";
+      const ITEMS_PER_PAGE = (skip - 1) * 9;
+
+      const [purchases, total] = await this.purchaseService.findByName(
+        ITEMS_PER_PAGE,
+        limit,
+        name
+      );
+
+      if (purchases.length < 1)
+        return this.responseHttp.notFound(res, "Not Found", " Not Found");
+      this.responseHttp.oK(res, {
+        purchases,
+        total,
+        totalPages: Math.ceil(total / limit),
+      });
     } catch (error) {
       this.responseHttp.error(res, error, error);
     }

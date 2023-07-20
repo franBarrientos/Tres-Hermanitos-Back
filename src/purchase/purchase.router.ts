@@ -19,6 +19,7 @@ export class PurchaseRouter extends BaseRouter<
         this.controller.getStadistics(req, res)
       )
       .get("/purchase/:id", (req, res) => this.controller.get(req, res))
+      .get("/purchase/byName/name", (req, res) => this.controller.getByName(req, res))
       .get("/purchase/customer/:id", (req, res) => this.controller.getByCustomer(req, res))
       .post(
         "/purchase",
