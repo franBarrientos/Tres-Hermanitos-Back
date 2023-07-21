@@ -68,8 +68,17 @@ export class PurchaseController {
 
       if (purchases.length < 1)
         return this.responseHttp.notFound(res, "Not Found", " Not Found");
+
+      const responseWithTotal = purchases.map((purchas) => {
+        return {
+          ...purchas,
+          totalPurchase: purchas.purchasesProducts.reduce((acc, product) => {
+            return product.totalPrice + acc;
+          }, 0),
+        };
+      });
       this.responseHttp.oK(res, {
-        purchases,
+        purchases: responseWithTotal,
         total,
         totalPages: Math.ceil(total / limit),
       });

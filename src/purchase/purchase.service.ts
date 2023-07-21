@@ -104,7 +104,8 @@ export class PurchaseService extends BaseService<Purchase> {
     limit: number,
     name: string
   ): Promise<[Purchase[], number]> {
-    return (await this.repository)
+    const dni = !isNaN(Number(name)) ? Number(name) : null;
+    const queryBuilder = (await this.repository)
       .createQueryBuilder("purchase")
       .leftJoinAndSelect("purchase.customer", "customer")
       .leftJoinAndSelect("customer.user", "user")
@@ -112,10 +113,10 @@ export class PurchaseService extends BaseService<Purchase> {
       .leftJoinAndSelect("purchasesProducts.product", "product")
       .where("user.firstName LIKE :name", { name: `%${name}%` })
       .orWhere("user.email LIKE :email", { email: `%${name}%` })
-      .orWhere("customer.dni = :dni", { dni: Number(name) })
-      .take(limit)
-      .skip(skip)
-      .getManyAndCount();
+    if (dni !== null) {
+      queryBuilder.orWhere("customer.dni = :dni", { dni });
+    }
+    return queryBuilder.take(limit).skip(skip).getManyAndCount();
   }
 
   public async getProductsMostSales(): Promise<any[]> {
