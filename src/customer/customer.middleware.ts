@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { ResponseHttp } from "../config/responses.http";
 import { validate } from "class-validator";
 import { CustomerDto } from "./customer.dto";
+import { AuthMiddleware } from "../auth/auth.middleware";
 
-export class CustomerMiddlware {
+export class CustomerMiddlware extends AuthMiddleware{
   constructor(
     private readonly responseHttp: ResponseHttp = new ResponseHttp()
-  ) {}
+  ) {super()}
   validateCustomer(req: Request, res: Response, next: NextFunction) {
     const { addres, dni, user, purchases } = req.body;
     const customerValidated = new CustomerDto();

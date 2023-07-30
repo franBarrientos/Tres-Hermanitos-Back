@@ -15,10 +15,15 @@ export class CustomerRouter extends BaseRouter<
       .get("/customer/:id", (req, res) => this.controller.get(req, res))
       .post(
         "/customer",
+        (req, res, next) => [this.middleware.checkUserRole(req, res, next)],
         (req, res, next) => [this.middleware.validateCustomer(req, res, next)],
         (req, res) => this.controller.create(req, res)
       )
-      .put("/customer/:id", (req, res) => this.controller.update(req, res))
-      .delete("/customer/:id", (req, res) => this.controller.delete(req, res));
+      .put("/customer/:id",
+      (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
+      (req, res) => this.controller.update(req, res))
+      .delete("/customer/:id",
+      (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
+      (req, res) => this.controller.delete(req, res));
   }
 }

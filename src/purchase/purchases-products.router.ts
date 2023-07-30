@@ -17,15 +17,20 @@ export class PurchasesProductRouter extends BaseRouter<
       )
       .post(
         "/purchasesProducts",
+        (req, res, next) => [this.middleware.checkUserRole(req, res, next)],
         (req, res, next) => [
           this.middleware.validatePurchasesProducts(req, res, next),
         ],
         (req, res) => this.controller.create(req, res)
       )
-      .put("/purchasesProducts/:id", (req, res) =>
+      .put("/purchasesProducts/:id",
+      (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
+      (req, res) =>
         this.controller.update(req, res)
       )
-      .delete("/purchasesProducts/:id", (req, res) =>
+      .delete("/purchasesProducts/:id",
+      (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
+      (req, res) =>
         this.controller.delete(req, res)
       );
   }

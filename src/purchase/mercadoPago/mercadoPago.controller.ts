@@ -32,12 +32,11 @@ export class MercadoPagoController extends ServerConfig {
         items: carritoMp,
         external_reference: `${idPurchase}`,
         back_urls: {
-          failure: "https://lyjjoyas.vercel.app/",
-          success: "https://lyjjoyas.vercel.app/",
-          pending: "https://lyjjoyas.vercel.app/",
+          failure: this.getEnvironmet("URL_FRONT")!,
+          success: this.getEnvironmet("URL_FRONT")!,
+          pending: this.getEnvironmet("URL_FRONT")!,
         },
-        notification_url:
-          "https://ecommerce-backv3-production.up.railway.app/api/webhook",
+        notification_url: `${this.getEnvironmet("URL_BACK")!}api/webhook`,
       });
 
       this.responseHttp.oK(res, { urlMercadoPago: response.body.init_point });
@@ -49,20 +48,10 @@ export class MercadoPagoController extends ServerConfig {
   public async recibeWebhook(req: Request, res: Response) {
     try {
       const query = req.query;
-      console.log(query);
-      console.log(query);
-      console.log(query);
-      console.log(query);
-
       if (query.type == "payment") {
         const data = await mercadopago.payment.findById(
           query["data.id"] as unknown as number
         );
-        console.log("Data");
-        console.log("Data");
-        console.log(data);
-        console.log(data);
-
         if (data.body.status == "approved") {
           const idPurchase = data.body.external_reference;
           await this.purchaseServide.updatePurchase(Number(idPurchase), {

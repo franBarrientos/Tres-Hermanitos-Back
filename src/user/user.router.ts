@@ -19,7 +19,7 @@ export class UserRouter extends BaseRouter<UserController, UserMiddlware> {
       )
       .put(
         "/users/:id",
-        (req, res, next) => [this.middleware.checkUserRole(req, res, next)],
+        (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
         (req, res) => this.controller.update(req, res)
       )
       .delete(

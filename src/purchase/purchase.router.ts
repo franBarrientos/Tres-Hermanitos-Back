@@ -23,6 +23,7 @@ export class PurchaseRouter extends BaseRouter<
       .get("/purchase/customer/:id", (req, res) => this.controller.getByCustomer(req, res))
       .post(
         "/purchase",
+        (req, res, next) => [this.middleware.checkUserRole(req, res, next)],
         (req, res, next) => [this.middleware.validatePurchase(req, res, next)],
         (req, res) => this.controller.create(req, res)
       )
@@ -32,7 +33,11 @@ export class PurchaseRouter extends BaseRouter<
       .post("/webhook", (req, res) =>
         this.mercadoPagoController.recibeWebhook(req, res)
       )
-      .put("/purchase/:id", (req, res) => this.controller.update(req, res))
-      .delete("/purchase/:id", (req, res) => this.controller.delete(req, res));
+      .put("/purchase/:id",
+      (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
+      (req, res) => this.controller.update(req, res))
+      .delete("/purchase/:id",
+      (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
+      (req, res) => this.controller.delete(req, res));
   }
 }
