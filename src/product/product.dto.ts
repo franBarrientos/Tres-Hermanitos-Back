@@ -18,6 +18,9 @@ export class ProductDto extends BaseDto {
   @IsOptional()
   stock?: boolean;
 
+  @IsOptional()
+  fav?: boolean;
+
   @IsNotEmpty()
   price!: number;
 

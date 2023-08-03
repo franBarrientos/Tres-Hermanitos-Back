@@ -28,6 +28,8 @@ export class ProductRouter extends BaseRouter<
       )
       .delete("/product/:id",
       (req, res, next) => this.middleware.checkAdminRole(req, res, next),
-      (req, res) => this.controller.delete(req, res));
+      (req, res) => this.controller.delete(req, res))
+      .get("/favs", (req, res) => this.controller.getFavs(req, res))
+
   }
 }

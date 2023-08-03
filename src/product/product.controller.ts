@@ -66,6 +66,16 @@ export class ProductController {
       this.responseHttp.error(res, error, error);
     }
   }
+  async getFavs(req: Request, res: Response) {
+    try {
+      const product = await this.productService.getFavs();
+      if (!product || product?.length < 1)
+        return this.responseHttp.notFound(res, "Not Found", " Not Found");
+      this.responseHttp.oK(res, product);
+    } catch (error) {
+      this.responseHttp.error(res, error, error);
+    }
+  }
   async create(req: Request, res: Response) {
     try {
       let product = req.body as ProductDto;

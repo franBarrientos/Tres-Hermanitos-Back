@@ -70,6 +70,20 @@ export class ProductService extends BaseService<Product> {
       },
     });
   }
+  public async getFavs(): Promise<Product[] | null> {
+    return (await this.repository).find({
+      where: { fav:true },
+      relations: {
+        category: true,
+      },
+      select: {
+        category: {
+          id: true,
+          name: true,
+        },
+      },
+    });
+  }
 
   public async createProduct(body: ProductDto): Promise<Product> {
     return (await this.repository).save(body);

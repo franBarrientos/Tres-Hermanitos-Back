@@ -20,6 +20,9 @@ export class Product extends BaseEntity{
 
     @Column({default:true})
     stock?:boolean
+
+    @Column({default:false})
+    fav?:boolean
     
     @ManyToOne(()=>Category,
     (category=>category.products))
