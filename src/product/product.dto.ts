@@ -8,7 +8,7 @@ export class ProductDto extends BaseDto {
   name!: string;
 
   @IsNotEmpty()
-  @Length(1, 50)
+  @Length(1, 200)
   description!: string;
 
   @IsNotEmpty()
